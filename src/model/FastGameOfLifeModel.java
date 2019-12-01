@@ -1,12 +1,10 @@
-package gameOfLife;
+package model;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GridLayout;
-import java.awt.LayoutManager;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -18,6 +16,11 @@ import javax.swing.JPanel;
 public class FastGameOfLifeModel extends JPanel
 		implements IGameOfLifeModel, MouseListener {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private List<GameOfLifeModelListener> listeners;
 
 	private int lowBirth;
@@ -28,7 +31,6 @@ public class FastGameOfLifeModel extends JPanel
 	private boolean isTorus;
 	private int[][] squares;
 
-	private Color backgroundColor;
 	private Color borderColor;
 	private Color fillColor;
 
@@ -42,31 +44,25 @@ public class FastGameOfLifeModel extends JPanel
 	 * Constructors.
 	 */
 
-	public FastGameOfLifeModel(int width, int height, Color backgroundColor,
-			Color borderColor, Color fillColor) {
+	public FastGameOfLifeModel() {
 		listeners = new ArrayList<GameOfLifeModelListener>();
-		squares = new int[width][height];
 
 		// Set starting values for properties.
+		squares = new int[10][10];
 		lowBirth = 3;
 		highBirth = 3;
 		lowSurvive = 2;
 		highSurvive = 3;
 		isTorus = false;
 
-		this.backgroundColor = backgroundColor;
-		this.borderColor = borderColor;
-		this.fillColor = fillColor;
+		this.borderColor = LIGHT;
+		this.fillColor = Color.YELLOW;
 
 		addMouseListener(this);
-		setBackground(backgroundColor);
+		setBackground(DARK);
 		setPreferredSize(
 				new Dimension(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT));
 		repaint();
-	}
-
-	public FastGameOfLifeModel(int size) {
-		this(size, size, DARK, LIGHT, Color.YELLOW);
 	}
 
 	/*
@@ -217,7 +213,7 @@ public class FastGameOfLifeModel extends JPanel
 				squares[x][y] = (rng.nextDouble() < probability) ? 1 : 0;
 			}
 		}
-		
+
 		repaint();
 	}
 

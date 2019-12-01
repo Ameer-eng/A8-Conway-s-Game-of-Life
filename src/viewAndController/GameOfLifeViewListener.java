@@ -1,4 +1,4 @@
-package gameOfLife;
+package viewAndController;
 
 public interface GameOfLifeViewListener {
 

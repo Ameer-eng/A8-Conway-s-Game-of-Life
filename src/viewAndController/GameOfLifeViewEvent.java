@@ -1,4 +1,4 @@
-package gameOfLife;
+package viewAndController;
 
 public abstract class GameOfLifeViewEvent {
 

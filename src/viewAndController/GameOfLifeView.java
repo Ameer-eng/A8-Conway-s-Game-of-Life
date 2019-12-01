@@ -1,9 +1,7 @@
-package gameOfLife;
+package viewAndController;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -14,8 +12,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import model.FastGameOfLifeModel;
+
 public class GameOfLifeView extends JPanel
 		implements IGameOfLifeView, ActionListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private List<GameOfLifeViewListener> listeners;
 	private JButton toggleTorusButton;
 	private JButton startStopButton;
@@ -108,7 +112,7 @@ public class GameOfLifeView extends JPanel
 		JLabel changeGridSizeLabel = new JLabel("Grid size:");
 		changeGridSizePanel.add(changeGridSizeLabel);
 
-		changeGridSizeInput = new JTextField("20");
+		changeGridSizeInput = new JTextField("10");
 		changeGridSizeInput.setActionCommand("Change grid size text field");
 		changeGridSizePanel.add(changeGridSizeInput);
 

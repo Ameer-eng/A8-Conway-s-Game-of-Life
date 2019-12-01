@@ -1,4 +1,4 @@
-package gameOfLife;
+package model;
 
 public interface IGameOfLifeModel {
 	void setLowBirth(int lowBirth);

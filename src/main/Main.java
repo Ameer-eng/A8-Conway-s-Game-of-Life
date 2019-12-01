@@ -1,19 +1,18 @@
-package gameOfLife;
-
-import java.awt.BorderLayout;
+package main;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
+import model.FastGameOfLifeModel;
+import viewAndController.GameOfLifeController;
+import viewAndController.GameOfLifeView;
 
 public class Main {
 
 	public static void main(String[] args) {
-		FastGameOfLifeModel model = new FastGameOfLifeModel(20);
+		FastGameOfLifeModel model = new FastGameOfLifeModel();
 		GameOfLifeView view = new GameOfLifeView(model);
-		GameOfLifeController controller = new GameOfLifeController(model, view);
+		new GameOfLifeController(model, view);
 
-		/* Create top level window. */
-
+		// Create top level window.
 		JFrame main_frame = new JFrame();
 		main_frame.setTitle("MVC Conway's Game of Life");
 		main_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

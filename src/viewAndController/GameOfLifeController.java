@@ -1,4 +1,6 @@
-package gameOfLife;
+package viewAndController;
+
+import model.FastGameOfLifeModel;
 
 public class GameOfLifeController implements IGameOfLifeController {
 	FastGameOfLifeModel model;
