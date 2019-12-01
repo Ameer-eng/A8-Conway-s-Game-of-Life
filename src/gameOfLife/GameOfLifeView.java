@@ -1,7 +1,9 @@
 package gameOfLife;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -13,25 +15,21 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class GameOfLifeView extends JPanel
-		implements SpotListener, ActionListener {
-
+		implements IGameOfLifeView, ActionListener {
 	private List<GameOfLifeViewListener> listeners;
-
+	private JButton toggleTorusButton;
+	private JButton startStopButton;
 	private JTextField changeGridSizeInput;
-
 	private JTextField changeLowBirthInput;
 	private JTextField changeHighBirthInput;
 	private JTextField changeLowSurviveInput;
 	private JTextField changeHighSurviveInput;
-
 	private JTextField changeDelayInput;
+	private JTextField changeProbabilityInput;
 
-	public GameOfLifeView(GameOfLifeModel grid) {
+	public GameOfLifeView(FastGameOfLifeModel grid) {
 		/* Populate the view */
 		setLayout(new BorderLayout());
-
-		// Add the grid to the view
-		add(grid, BorderLayout.CENTER);
 
 		// Create the controlPanel which holds all the necessary ui elements
 		JPanel controlPanel = new JPanel();
@@ -45,12 +43,24 @@ public class GameOfLifeView extends JPanel
 		JPanel bottomPanel = new JPanel();
 		bottomPanel.setLayout(new GridLayout(1, 0, 10, 0));
 
-		// Add fill randomly button.
-		JButton fillRandomlyButton = new JButton("Fill randomly");
+		// Add fill randomly panel.
+		JPanel fillRandomlyPanel = new JPanel();
+		fillRandomlyPanel.setLayout(new GridLayout(1, 0));
+
+		JLabel changeProbabilityLabel = new JLabel("Probability = ");
+		fillRandomlyPanel.add(changeProbabilityLabel);
+
+		changeProbabilityInput = new JTextField("0.5");
+		changeProbabilityInput
+				.setActionCommand("Change probability text field");
+		fillRandomlyPanel.add(changeProbabilityInput);
+
+		JButton fillRandomlyButton = new JButton("Fill");
 		fillRandomlyButton.addActionListener(this);
 		fillRandomlyButton.setActionCommand("Fill randomly button");
+		fillRandomlyPanel.add(fillRandomlyButton);
 
-		topPanel.add(fillRandomlyButton);
+		topPanel.add(fillRandomlyPanel);
 
 		// Add advance game button.
 		JButton advanceGameButton = new JButton("Advance game");
@@ -60,7 +70,7 @@ public class GameOfLifeView extends JPanel
 		topPanel.add(advanceGameButton);
 
 		// Add toggle Torus button
-		JButton toggleTorusButton = new JButton("Turn Torus on");
+		toggleTorusButton = new JButton("Turn torus on");
 		toggleTorusButton.addActionListener(this);
 		toggleTorusButton.setActionCommand("Toggle torus button");
 
@@ -84,7 +94,7 @@ public class GameOfLifeView extends JPanel
 		changeDelayInput.setActionCommand("Change delay text field");
 		startStopPanel.add(changeDelayInput);
 
-		JButton startStopButton = new JButton("Start");
+		startStopButton = new JButton("Start");
 		startStopButton.addActionListener(this);
 		startStopButton.setActionCommand("Start/stop button");
 		startStopPanel.add(startStopButton);
@@ -147,27 +157,27 @@ public class GameOfLifeView extends JPanel
 		// Put the control panel in the View.
 		add(controlPanel, BorderLayout.SOUTH);
 
-		/* Add the view as a SpotListener of all the spots on the grid */
-		grid.addSpotListener(this);
+		// Add the grid to the View.
+		add(grid, BorderLayout.CENTER);
 
 		// Instantiate List of listeners
 		listeners = new ArrayList<GameOfLifeViewListener>();
 	}
 
-	@Override
-	public void spotClicked(Spot spot) {
-		fireEvent(new SpotClickedEvent(spot));
+	public void setToggleTorusButtonTextTo(String msg) {
+		if (msg == null) {
+			throw new IllegalArgumentException("Null message");
+		}
+
+		toggleTorusButton.setText(msg);
 	}
 
-	@Override
-	public void spotEntered(Spot spot) {
-		// TODO Auto-generated method stub
+	public void setStartStopButtonTextTo(String msg) {
+		if (msg == null) {
+			throw new IllegalArgumentException("Null message");
+		}
 
-	}
-
-	@Override
-	public void spotExited(Spot spot) {
-		// TODO Auto-generated method stub
+		startStopButton.setText(msg);
 	}
 
 	/*
@@ -175,54 +185,118 @@ public class GameOfLifeView extends JPanel
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		String actionCommand = ((JButton) e.getSource()).getActionCommand();
+		JButton buttonPressed = (JButton) e.getSource();
+		String actionCommand = buttonPressed.getActionCommand();
 		switch (actionCommand) {
 		case "Fill randomly button":
-			fireEvent(new FillGridRandomlyEvent());
+			double value1;
+			if (isDouble(changeProbabilityInput.getText())
+					&& (value1 = Double
+							.parseDouble(changeProbabilityInput.getText())) >= 0
+					&& value1 <= 1) {
+				fireEvent(new FillGridRandomlyEvent(value1));
+			}
 			break;
 		case "Advance game button":
 			fireEvent(new AdvanceGameEvent());
 			break;
-		case "Change grid size button":
-			int size = isInteger(changeGridSizeInput.getText());
-			if (size >= 10 && size <= 500) {
-				fireEvent(new ChangeGridSizeEvent(size));
-			}
+		case "Toggle torus button":
+			fireEvent(new ToggleTorusEvent(
+					buttonPressed.getText().equals("Turn torus on")));
 			break;
 		case "Clear grid button":
 			fireEvent(new ClearGridEvent());
 			break;
+		case "Start/stop button":
+			if (buttonPressed.getText().equals("Start")) {
+				long value2;
+				if (isInteger(changeDelayInput.getText())
+						&& (value2 = Long
+								.parseLong(changeDelayInput.getText())) >= 10
+						&& value2 <= 1000) {
+					fireEvent(new StartEvent(value2));
+				}
+			} else {
+				fireEvent(new StopEvent());
+			}
+			break;
+		case "Change grid size button":
+			int value3;
+			if (isInteger(changeGridSizeInput.getText())
+					&& (value3 = Integer
+							.parseInt(changeGridSizeInput.getText())) >= 10
+					&& value3 <= 500) {
+				fireEvent(new ChangeGridSizeEvent(value3));
+			}
+			break;
+		case "Change thresholds button":
+			int value4;
+			if (isInteger(changeLowBirthInput.getText())
+					&& (value4 = Integer
+							.parseInt(changeLowBirthInput.getText())) >= 0
+					&& value4 <= 8) {
+				fireEvent(new ChangeLowBirthThresholdEvent(value4));
+			}
+			if (isInteger(changeHighBirthInput.getText())
+					&& (value4 = Integer
+							.parseInt(changeHighBirthInput.getText())) >= 0
+					&& value4 <= 8) {
+				fireEvent(new ChangeHighBirthThresholdEvent(value4));
+			}
+			if (isInteger(changeLowSurviveInput.getText())
+					&& (value4 = Integer
+							.parseInt(changeLowSurviveInput.getText())) >= 0
+					&& value4 <= 8) {
+				fireEvent(new ChangeLowSurviveThresholdEvent(value4));
+			}
+			if (isInteger(changeHighSurviveInput.getText())
+					&& (value4 = Integer
+							.parseInt(changeHighSurviveInput.getText())) >= 0
+					&& value4 <= 8) {
+				fireEvent(new ChangeHighSurviveThresholdEvent(value4));
+			}
+			break;
 		}
+	}
 
+	/*
+	 * Checks whether a String is an integer.
+	 */
+	private boolean isInteger(String string) {
+		try {
+			Integer.parseInt(string);
+			return true;
+		} catch (NumberFormatException e) {
+			return false;
+		}
+	}
+
+	/*
+	 * Checks whether a String is a double. Returns the double representation if
+	 * valid or -1 if invalid.
+	 */
+	private boolean isDouble(String string) {
+		try {
+			Double.parseDouble(string);
+			return true;
+		} catch (NumberFormatException e) {
+			return false;
+		}
+	}
+
+	@Override
+	public void addGameOfLifeViewListener(GameOfLifeViewListener l) {
+		listeners.add(l);
+	}
+
+	@Override
+	public void removeGameOfLifeViewListener(GameOfLifeViewListener l) {
+		listeners.remove(l);
 	}
 
 	private void fireEvent(GameOfLifeViewEvent e) {
 		for (GameOfLifeViewListener l : listeners) {
 			l.handleGameOfLifeViewEvent(e);
 		}
-	}
-
-	/*
-	 * Checks whether a String is a valid size, namely whether it is an integer
-	 * in the range 10 to 500 inclusive. Returns the int representation if valid
-	 * or -1 if invalid.
-	 */
-	private int isInteger(String string) {
-		int result;
-		try {
-			result = Integer.parseInt(string);
-		} catch (NumberFormatException e) {
-			return -1;
-		}
-
-		return result;
-	}
-
-	public void addGameOfLifeViewListener(GameOfLifeViewListener l) {
-		listeners.add(l);
-	}
-
-	public void removeGameOfLifeViewListener(GameOfLifeViewListener l) {
-		listeners.remove(l);
 	}
 }

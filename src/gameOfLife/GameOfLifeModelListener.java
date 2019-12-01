@@ -1,6 +1,5 @@
 package gameOfLife;
 
 public interface GameOfLifeModelListener {
-
-	void update();
+	void update(String actionCommand);
 }

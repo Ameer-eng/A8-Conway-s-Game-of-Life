@@ -8,7 +8,7 @@ import javax.swing.JPanel;
 public class Main {
 
 	public static void main(String[] args) {
-		GameOfLifeModel model = new GameOfLifeModel(20, 20);
+		FastGameOfLifeModel model = new FastGameOfLifeModel(20);
 		GameOfLifeView view = new GameOfLifeView(model);
 		GameOfLifeController controller = new GameOfLifeController(model, view);
 
