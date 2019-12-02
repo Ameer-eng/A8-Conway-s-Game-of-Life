@@ -141,19 +141,19 @@ public class GameOfLifeView extends JPanel
 		JLabel changeThresholdsLabel = new JLabel("Thresholds:");
 		changeThresholdsPanel.add(changeThresholdsLabel);
 
-		changeLowBirthInput = new JTextField("Low birth (3)");
+		changeLowBirthInput = new JTextField("low birth here");
 		changeLowBirthInput.setActionCommand("Change low birth text field");
 		changeThresholdsPanel.add(changeLowBirthInput);
 
-		changeHighBirthInput = new JTextField("High birth (3)");
+		changeHighBirthInput = new JTextField("high birth here");
 		changeHighBirthInput.setActionCommand("Change high birth text field");
 		changeThresholdsPanel.add(changeHighBirthInput);
 
-		changeLowSurviveInput = new JTextField("Low survive (2)");
+		changeLowSurviveInput = new JTextField("low survive here");
 		changeLowSurviveInput.setActionCommand("Change low survive text field");
 		changeThresholdsPanel.add(changeLowSurviveInput);
 
-		changeHighSurviveInput = new JTextField("High survive (3)");
+		changeHighSurviveInput = new JTextField("high survive here");
 		changeHighSurviveInput
 				.setActionCommand("Change high survive text field");
 		changeThresholdsPanel.add(changeHighSurviveInput);
