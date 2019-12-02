@@ -41,9 +41,8 @@ public class FastGameOfLifeModel extends JPanel
 	private static final float BORDER_WIDTH = (float) 0.1;
 
 	/*
-	 * Constructors.
+	 * Constructor
 	 */
-
 	public FastGameOfLifeModel() {
 		listeners = new ArrayList<GameOfLifeModelListener>();
 
@@ -157,8 +156,9 @@ public class FastGameOfLifeModel extends JPanel
 		// Get the dimensions of an individual square in terms of pixels.
 		// The dimensions of the board are fixed to be the largest square
 		// possible using the available board size.
-		int dimSquare = Math.min((int) getSize().getWidth(),
-				(int) getSize().getHeight()) / squares.length;
+		int yDim = (int) getSize().getHeight() / squares[0].length;
+		int xDim = (int) getSize().getWidth() / squares.length;
+		int dimSquare = Math.min(yDim, xDim);
 
 		// Get (x, y) coordinates of mouse.
 		int x = e.getX() / dimSquare;
@@ -174,26 +174,18 @@ public class FastGameOfLifeModel extends JPanel
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 
 	/*
@@ -222,7 +214,7 @@ public class FastGameOfLifeModel extends JPanel
 	 */
 	@Override
 	public void advanceGame() {
-		// calculate the future board state.
+		// Calculate the future board state.
 		int[][] future = new int[squares.length][squares[0].length];
 		for (int x = 0; x < squares.length; x++) {
 			for (int y = 0; y < squares[x].length; y++) {
@@ -252,51 +244,6 @@ public class FastGameOfLifeModel extends JPanel
 	}
 
 	/*
-	 * Changes grid size while maintaining states of current squares.
-	 */
-	@Override
-	public void changeGridSizeTo(int size) {
-		// Do nothing if the size is unchanged.
-		if (size == squares.length) {
-			return;
-		}
-
-		if (size < 0) {
-			throw new IllegalArgumentException("Size is negative");
-		}
-
-		int[][] newSquares = new int[size][size];
-
-		// squares in the old grid stay the same.
-		for (int x = 0; x < Math.min(squares.length, newSquares.length); x++) {
-			for (int y = 0; y < Math.min(squares[x].length,
-					newSquares[x].length); y++) {
-				newSquares[x][y] = squares[x][y];
-			}
-		}
-
-		// The rest of the squares are unfilled(0) by default so no need to do
-		// anything further.
-
-		squares = newSquares;
-		repaint();
-	}
-
-	/*
-	 * Kills all cells on the grid.
-	 */
-	@Override
-	public void clearGrid() {
-		for (int x = 0; x < squares.length; x++) {
-			for (int y = 0; y < squares[x].length; y++) {
-				squares[x][y] = 0;
-			}
-		}
-
-		repaint();
-	}
-
-	/*
 	 * Helper methods to count the number of live neighbors a spot has.
 	 */
 
@@ -306,42 +253,42 @@ public class FastGameOfLifeModel extends JPanel
 		int height = squares[0].length;
 
 		// Check above.
-		if (y >= 1) {
+		if (y != 0) {
 			count += squares[x][y - 1];
 		}
 
 		// Check below.
-		if (y <= height - 2) {
+		if (y != height - 1) {
 			count += squares[x][y + 1];
 		}
 
 		// Check to the right.
-		if (x <= width - 2) {
+		if (x != width - 1) {
 			count += squares[x + 1][y];
 		}
 
 		// Check to the left.
-		if (x >= 1) {
+		if (x != 0) {
 			count += squares[x - 1][y];
 		}
 
 		// Check upper left diagonal.
-		if (y >= 1 && x >= 1) {
+		if (y != 0 && x != 0) {
 			count += squares[x - 1][y - 1];
 		}
 
 		// Check lower right diagonal.
-		if (y <= height - 2 && x <= width - 2) {
+		if (y != height - 1 && x != width - 1) {
 			count += squares[x + 1][y + 1];
 		}
 
 		// Check upper right diagonal.
-		if (y >= 1 && x <= width - 2) {
+		if (y != 0 && x != width - 1) {
 			count += squares[x + 1][y - 1];
 		}
 
 		// Check lower left diagonal.
-		if (y <= height - 2 && x >= 1) {
+		if (y != height - 1 && x != 0) {
 			count += squares[x - 1][y + 1];
 		}
 
@@ -412,6 +359,51 @@ public class FastGameOfLifeModel extends JPanel
 		return count;
 	}
 
+	/*
+	 * Changes grid size while maintaining states of current squares.
+	 */
+	@Override
+	public void changeGridSizeTo(int width, int height) {
+		// Do nothing if the size is unchanged.
+		if (width == squares.length && height == squares[0].length) {
+			return;
+		}
+
+		if (width < 0 || height < 0) {
+			throw new IllegalArgumentException("Width or height is negative");
+		}
+
+		int[][] newSquares = new int[width][height];
+
+		// Squares in the old grid stay the same.
+		for (int x = 0; x < Math.min(squares.length, newSquares.length); x++) {
+			for (int y = 0; y < Math.min(squares[x].length,
+					newSquares[x].length); y++) {
+				newSquares[x][y] = squares[x][y];
+			}
+		}
+
+		// The rest of the squares are unfilled(0) by default so no need to do
+		// anything further.
+
+		squares = newSquares;
+		repaint();
+	}
+
+	/*
+	 * Kills all cells on the grid.
+	 */
+	@Override
+	public void clearGrid() {
+		for (int x = 0; x < squares.length; x++) {
+			for (int y = 0; y < squares[x].length; y++) {
+				squares[x][y] = 0;
+			}
+		}
+
+		repaint();
+	}
+
 	@Override
 	public void paintComponent(Graphics g) {
 		// Super class paintComponent will take care of
@@ -423,8 +415,9 @@ public class FastGameOfLifeModel extends JPanel
 		// Get the dimensions of an individual square in terms of pixels.
 		// The dimensions of the board are fixed to be the largest square
 		// possible using the available board size.
-		int dimSquare = Math.min((int) getSize().getWidth(),
-				(int) getSize().getHeight()) / squares.length;
+		int dimSquare = Math.min(
+				(int) getSize().getHeight() / squares[0].length,
+				(int) getSize().getWidth() / squares.length);
 
 		// If the squares are more than 1 x 1, paint the grid,
 		// otherwise just paint the border of the grid.
@@ -432,7 +425,7 @@ public class FastGameOfLifeModel extends JPanel
 		g2d.setStroke(new BasicStroke(BORDER_WIDTH));
 		if (dimSquare > 1) {
 			for (int x = 0; x < squares.length; x++) {
-				for (int y = 0; y < squares.length; y++) {
+				for (int y = 0; y < squares[x].length; y++) {
 					g2d.drawRect(dimSquare * x, dimSquare * y, dimSquare,
 							dimSquare);
 				}

@@ -6,6 +6,9 @@ public class GameOfLifeController implements IGameOfLifeController {
 	FastGameOfLifeModel model;
 	GameOfLifeView view;
 
+	/*
+	 * Constructor.
+	 */
 	public GameOfLifeController(FastGameOfLifeModel model,
 			GameOfLifeView view) {
 		view.addGameOfLifeViewListener(this);
@@ -14,6 +17,9 @@ public class GameOfLifeController implements IGameOfLifeController {
 		this.view = view;
 	}
 
+	/*
+	 * Handles events that happen in the View.
+	 */
 	@Override
 	public void handleGameOfLifeViewEvent(GameOfLifeViewEvent e) {
 		if (e.isFillGridRandomlyEvent()) {
@@ -33,7 +39,8 @@ public class GameOfLifeController implements IGameOfLifeController {
 			model.stopRunner();
 		} else if (e.isChangeGridSizeEvent()) {
 			ChangeGridSizeEvent changeGridSize = (ChangeGridSizeEvent) e;
-			model.changeGridSizeTo(changeGridSize.getSize());
+			model.changeGridSizeTo(changeGridSize.getWidth(),
+					changeGridSize.getHeight());
 		} else if (e.isChangeLowBirthThresholdEvent()) {
 			ChangeLowBirthThresholdEvent changeLowBirth = (ChangeLowBirthThresholdEvent) e;
 			model.setLowBirth(changeLowBirth.getLowBirth());
@@ -49,6 +56,9 @@ public class GameOfLifeController implements IGameOfLifeController {
 		}
 	}
 
+	/*
+	 * Handles updates from the Model.
+	 */
 	@Override
 	public void update(String actionCommand) {
 		switch (actionCommand) {

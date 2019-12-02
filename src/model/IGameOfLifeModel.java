@@ -10,7 +10,7 @@ public interface IGameOfLifeModel {
 	
 	void fillGridRandomly(double probability);
 	void advanceGame();
-	void changeGridSizeTo(int size);
+	void changeGridSizeTo(int width, int height);
 	void clearGrid();
 	void startRunner(long delay);
 	void stopRunner();

@@ -23,7 +23,8 @@ public class GameOfLifeView extends JPanel
 	private List<GameOfLifeViewListener> listeners;
 	private JButton toggleTorusButton;
 	private JButton startStopButton;
-	private JTextField changeGridSizeInput;
+	private JTextField changeGridWidthInput;
+	private JTextField changeGridHeightInput;
 	private JTextField changeLowBirthInput;
 	private JTextField changeHighBirthInput;
 	private JTextField changeLowSurviveInput;
@@ -31,19 +32,22 @@ public class GameOfLifeView extends JPanel
 	private JTextField changeDelayInput;
 	private JTextField changeProbabilityInput;
 
+	/*
+	 * Constructor.
+	 */
 	public GameOfLifeView(FastGameOfLifeModel grid) {
 		/* Populate the view */
 		setLayout(new BorderLayout());
 
-		// Create the controlPanel which holds all the necessary ui elements
+		// Create the controlPanel which holds all the necessary UI elements.
 		JPanel controlPanel = new JPanel();
 		controlPanel.setLayout(new GridLayout(2, 0));
 
-		// Create top panel to hold user-Game action ui elements.
+		// Create top panel to hold user-Game action UI elements.
 		JPanel topPanel = new JPanel();
 		topPanel.setLayout(new GridLayout(1, 0));
 
-		// Create bottom panel to hold ui elements that change game settings.
+		// Create bottom panel to hold UI elements that change game settings.
 		JPanel bottomPanel = new JPanel();
 		bottomPanel.setLayout(new GridLayout(1, 0, 10, 0));
 
@@ -73,7 +77,7 @@ public class GameOfLifeView extends JPanel
 
 		topPanel.add(advanceGameButton);
 
-		// Add toggle Torus button
+		// Add toggle torus button
 		toggleTorusButton = new JButton("Turn torus on");
 		toggleTorusButton.addActionListener(this);
 		toggleTorusButton.setActionCommand("Toggle torus button");
@@ -112,9 +116,16 @@ public class GameOfLifeView extends JPanel
 		JLabel changeGridSizeLabel = new JLabel("Grid size:");
 		changeGridSizePanel.add(changeGridSizeLabel);
 
-		changeGridSizeInput = new JTextField("10");
-		changeGridSizeInput.setActionCommand("Change grid size text field");
-		changeGridSizePanel.add(changeGridSizeInput);
+		changeGridWidthInput = new JTextField("10");
+		changeGridWidthInput.setActionCommand("Change grid width text field");
+		changeGridSizePanel.add(changeGridWidthInput);
+
+		JLabel xLabel = new JLabel("                x ");
+		changeGridSizePanel.add(xLabel);
+
+		changeGridHeightInput = new JTextField("10");
+		changeGridHeightInput.setActionCommand("Change grid height text field");
+		changeGridSizePanel.add(changeGridHeightInput);
 
 		JButton changeGridSizeButton = new JButton("Change");
 		changeGridSizeButton.addActionListener(this);
@@ -123,7 +134,7 @@ public class GameOfLifeView extends JPanel
 
 		bottomPanel.add(changeGridSizePanel);
 
-		// Add change thresholds panel
+		// Add change thresholds panel.
 		JPanel changeThresholdsPanel = new JPanel();
 		changeThresholdsPanel.setLayout(new GridLayout(1, 0));
 
@@ -167,6 +178,10 @@ public class GameOfLifeView extends JPanel
 		// Instantiate List of listeners
 		listeners = new ArrayList<GameOfLifeViewListener>();
 	}
+
+	/*
+	 * Set the text for toggle buttons.
+	 */
 
 	public void setToggleTorusButtonTextTo(String msg) {
 		if (msg == null) {
@@ -225,12 +240,17 @@ public class GameOfLifeView extends JPanel
 			}
 			break;
 		case "Change grid size button":
-			int value3;
-			if (isInteger(changeGridSizeInput.getText())
-					&& (value3 = Integer
-							.parseInt(changeGridSizeInput.getText())) >= 10
-					&& value3 <= 500) {
-				fireEvent(new ChangeGridSizeEvent(value3));
+			int width;
+			int height;
+			if (isInteger(changeGridWidthInput.getText())
+					&& (width = Integer
+							.parseInt(changeGridWidthInput.getText())) >= 10
+					&& width <= 500
+					&& isInteger(changeGridHeightInput.getText())
+					&& (height = Integer
+							.parseInt(changeGridHeightInput.getText())) >= 10
+					&& height <= 500) {
+				fireEvent(new ChangeGridSizeEvent(width, height));
 			}
 			break;
 		case "Change thresholds button":
@@ -276,8 +296,7 @@ public class GameOfLifeView extends JPanel
 	}
 
 	/*
-	 * Checks whether a String is a double. Returns the double representation if
-	 * valid or -1 if invalid.
+	 * Checks whether a String is a double.
 	 */
 	private boolean isDouble(String string) {
 		try {
