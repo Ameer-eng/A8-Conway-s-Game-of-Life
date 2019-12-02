@@ -20,6 +20,7 @@ public class GameOfLifeView extends JPanel
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
 	private List<GameOfLifeViewListener> listeners;
 	private JButton toggleTorusButton;
 	private JButton startStopButton;

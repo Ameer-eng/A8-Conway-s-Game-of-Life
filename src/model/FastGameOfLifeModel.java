@@ -20,9 +20,16 @@ public class FastGameOfLifeModel extends JPanel
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	private static final Color DARK = new Color(0.5f, 0.5f, 0.5f);
+	private static final Color LIGHT = new Color(0.8f, 0.8f, 0.8f);
+	private static final int DEFAULT_SCREEN_WIDTH = 600;
+	private static final int DEFAULT_SCREEN_HEIGHT = 600;
+	private static final float BORDER_WIDTH = (float) 0.1;
 
-	private List<GameOfLifeModelListener> listeners;
-
+	private Color borderColor;
+	private Color fillColor;
+	
 	private int lowBirth;
 	private int highBirth;
 	private int lowSurvive;
@@ -30,15 +37,7 @@ public class FastGameOfLifeModel extends JPanel
 	private GameOfLifeRunner runner;
 	private boolean isTorus;
 	private int[][] squares;
-
-	private Color borderColor;
-	private Color fillColor;
-
-	private static final Color DARK = new Color(0.5f, 0.5f, 0.5f);
-	private static final Color LIGHT = new Color(0.8f, 0.8f, 0.8f);
-	private static final int DEFAULT_SCREEN_WIDTH = 600;
-	private static final int DEFAULT_SCREEN_HEIGHT = 600;
-	private static final float BORDER_WIDTH = (float) 0.1;
+	private List<GameOfLifeModelListener> listeners;
 
 	/*
 	 * Constructor
@@ -156,9 +155,9 @@ public class FastGameOfLifeModel extends JPanel
 		// Get the dimensions of an individual square in terms of pixels.
 		// The dimensions of the board are fixed to be the largest square
 		// possible using the available board size.
-		int yDim = (int) getSize().getHeight() / squares[0].length;
-		int xDim = (int) getSize().getWidth() / squares.length;
-		int dimSquare = Math.min(yDim, xDim);
+		int dimSquare = Math.min(
+				(int) getSize().getHeight() / squares[0].length,
+				(int) getSize().getWidth() / squares.length);
 
 		// Get (x, y) coordinates of mouse.
 		int x = e.getX() / dimSquare;
@@ -189,8 +188,8 @@ public class FastGameOfLifeModel extends JPanel
 	}
 
 	/*
-	 * fillGridRandomly
-	 * 
+	 * Fills the grid randomly with each square having the same probability to
+	 * be filled.
 	 */
 	@Override
 	public void fillGridRandomly(double probability) {
@@ -383,7 +382,7 @@ public class FastGameOfLifeModel extends JPanel
 			}
 		}
 
-		// The rest of the squares are unfilled(0) by default so no need to do
+		// The rest of the squares are unfilled (0) by default so no need to do
 		// anything further.
 
 		squares = newSquares;
