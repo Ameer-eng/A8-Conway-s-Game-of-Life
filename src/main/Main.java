@@ -14,7 +14,7 @@ public class Main {
 			public void run() {
 				FastGameOfLifeModel model = new FastGameOfLifeModel();
 				GameOfLifeView view = new GameOfLifeView(model);
-				new GameOfLifeController(model, view);
+				GameOfLifeController controller = new GameOfLifeController(model, view);
 
 				// Create top level window.
 				JFrame main_frame = new JFrame();
