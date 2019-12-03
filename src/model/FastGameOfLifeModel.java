@@ -20,7 +20,7 @@ public class FastGameOfLifeModel extends JPanel
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private static final Color DARK = new Color(0.5f, 0.5f, 0.5f);
 	private static final Color LIGHT = new Color(0.8f, 0.8f, 0.8f);
 	private static final int DEFAULT_SCREEN_WIDTH = 600;
@@ -29,14 +29,14 @@ public class FastGameOfLifeModel extends JPanel
 
 	private Color borderColor;
 	private Color fillColor;
-	
+
 	private int lowBirth;
 	private int highBirth;
 	private int lowSurvive;
 	private int highSurvive;
 	private GameOfLifeRunner runner;
 	private boolean isTorus;
-	private int[][] squares;
+	private boolean[][] squares;
 	private List<GameOfLifeModelListener> listeners;
 
 	/*
@@ -46,7 +46,7 @@ public class FastGameOfLifeModel extends JPanel
 		listeners = new ArrayList<GameOfLifeModelListener>();
 
 		// Set starting values for properties.
-		squares = new int[10][10];
+		squares = new boolean[10][10];
 		lowBirth = 3;
 		highBirth = 3;
 		lowSurvive = 2;
@@ -165,7 +165,7 @@ public class FastGameOfLifeModel extends JPanel
 
 		// Flip the square.
 		if (x < squares.length && x >= 0 && y < squares[x].length && y >= 0) {
-			squares[x][y] = (squares[x][y] == 0) ? 1 : 0;
+			squares[x][y] = !squares[x][y];
 
 		}
 		repaint();
@@ -201,7 +201,7 @@ public class FastGameOfLifeModel extends JPanel
 		Random rng = new Random();
 		for (int x = 0; x < squares.length; x++) {
 			for (int y = 0; y < squares[x].length; y++) {
-				squares[x][y] = (rng.nextDouble() < probability) ? 1 : 0;
+				squares[x][y] = rng.nextDouble() < probability;
 			}
 		}
 
@@ -214,26 +214,15 @@ public class FastGameOfLifeModel extends JPanel
 	@Override
 	public void advanceGame() {
 		// Calculate the future board state.
-		int[][] future = new int[squares.length][squares[0].length];
+		boolean[][] future = new boolean[squares.length][squares[0].length];
 		for (int x = 0; x < squares.length; x++) {
 			for (int y = 0; y < squares[x].length; y++) {
-				int liveNeighborCount = isTorus ? torusLiveNeighborsCount(x, y)
-						: liveNeighborsCount(x, y);
-				if (squares[x][y] == 0) {
-					if (liveNeighborCount >= lowBirth
-							&& liveNeighborCount <= highBirth) {
-						future[x][y] = 1;
-					} else {
-						future[x][y] = 0;
-					}
-				} else {
-					if (liveNeighborCount < lowSurvive
-							|| liveNeighborCount > highSurvive) {
-						future[x][y] = 0;
-					} else {
-						future[x][y] = 1;
-					}
-				}
+				int liveNeighborCount = liveNeighborsCount(x, y);
+				future[x][y] = squares[x][y]
+						? liveNeighborCount >= lowSurvive
+								&& liveNeighborCount <= highSurvive
+						: liveNeighborCount >= lowBirth
+								&& liveNeighborCount <= highBirth;
 			}
 		}
 
@@ -243,7 +232,7 @@ public class FastGameOfLifeModel extends JPanel
 	}
 
 	/*
-	 * Helper methods to count the number of live neighbors a spot has.
+	 * Helper method to count the number of live neighbors a spot has.
 	 */
 
 	private int liveNeighborsCount(int x, int y) {
@@ -253,106 +242,149 @@ public class FastGameOfLifeModel extends JPanel
 
 		// Check above.
 		if (y != 0) {
-			count += squares[x][y - 1];
+			if (squares[x][y - 1]) {
+				count++;
+			}
 		}
 
 		// Check below.
 		if (y != height - 1) {
-			count += squares[x][y + 1];
+			if (squares[x][y + 1]) {
+				count++;
+			}
 		}
 
 		// Check to the right.
 		if (x != width - 1) {
-			count += squares[x + 1][y];
+			if (squares[x + 1][y]) {
+				count++;
+			}
 		}
 
 		// Check to the left.
 		if (x != 0) {
-			count += squares[x - 1][y];
+			if (squares[x - 1][y]) {
+				count++;
+			}
 		}
 
 		// Check upper left diagonal.
 		if (y != 0 && x != 0) {
-			count += squares[x - 1][y - 1];
+			if (squares[x - 1][y - 1]) {
+				count++;
+			}
 		}
 
 		// Check lower right diagonal.
 		if (y != height - 1 && x != width - 1) {
-			count += squares[x + 1][y + 1];
+			if (squares[x + 1][y + 1]) {
+				count++;
+			}
 		}
 
 		// Check upper right diagonal.
 		if (y != 0 && x != width - 1) {
-			count += squares[x + 1][y - 1];
+			if (squares[x + 1][y - 1]) {
+				count++;
+			}
 		}
 
 		// Check lower left diagonal.
 		if (y != height - 1 && x != 0) {
-			count += squares[x - 1][y + 1];
+			if (squares[x - 1][y + 1]) {
+				count++;
+			}
 		}
 
-		return count;
-	}
+		// If torus is on do more checks.
+		if (isTorus) {
+			// Check above.
+			if (y == 0) {
+				if (squares[x][height - 1]) {
+					count++;
+				}
+			}
 
-	private int torusLiveNeighborsCount(int x, int y) {
-		int count = liveNeighborsCount(x, y);
-		int width = squares.length;
-		int height = squares[0].length;
+			// Check below.
+			if (y == height - 1) {
+				if (squares[x][0]) {
+					count++;
+				}
+			}
 
-		// Check above.
-		if (y == 0) {
-			count += squares[x][height - 1];
-		}
+			// Check to the right.
+			if (x == width - 1) {
+				if (squares[0][y]) {
+					count++;
+				}
+			}
 
-		// Check below.
-		if (y == height - 1) {
-			count += squares[x][0];
-		}
+			// Check to the left.
+			if (x == 0) {
+				if (squares[width - 1][y]) {
+					count++;
+				}
+			}
 
-		// Check to the right.
-		if (x == width - 1) {
-			count += squares[0][y];
-		}
+			// Check upper left diagonal.
+			if (y == 0 && x == 0) {
+				if (squares[width - 1][height - 1]) {
+					count++;
+				}
+			} else if (y == 0) {
+				if (squares[x - 1][height - 1]) {
+					count++;
+				}
+			} else if (x == 0) {
+				if (squares[width - 1][y - 1]) {
+					count++;
+				}
+			}
 
-		// Check to the left.
-		if (x == 0) {
-			count += squares[width - 1][y];
-		}
+			// Check lower right diagonal.
+			if (y == height - 1 && x == width - 1) {
+				if (squares[0][0]) {
+					count++;
+				}
+			} else if (y == height - 1) {
+				if (squares[x + 1][0]) {
+					count++;
+				}
+			} else if (x == width - 1) {
+				if (squares[0][y + 1]) {
+					count++;
+				}
+			}
 
-		// Check upper left diagonal.
-		if (y == 0 && x == 0) {
-			count += squares[width - 1][height - 1];
-		} else if (y == 0) {
-			count += squares[x - 1][height - 1];
-		} else if (x == 0) {
-			count += squares[width - 1][y - 1];
-		}
+			// Check upper right diagonal.
+			if (y == 0 && x == width - 1) {
+				if (squares[0][height - 1]) {
+					count++;
+				}
+			} else if (y == 0) {
+				if (squares[x + 1][height - 1]) {
+					count++;
+				}
+			} else if (x == width - 1) {
+				if (squares[0][y - 1]) {
+					count++;
+				}
+			}
 
-		// Check lower right diagonal.
-		if (y == height - 1 && x == width - 1) {
-			count += squares[0][0];
-		} else if (y == height - 1) {
-			count += squares[x + 1][0];
-		} else if (x == width - 1) {
-			count += squares[0][y + 1];
-		}
-
-		// Check upper right diagonal.
-		if (y == 0 && x == width - 1) {
-			count += squares[0][height - 1];
-		} else if (y == 0) {
-			count += squares[x + 1][height - 1];
-		} else if (x == width - 1) {
-			count += squares[0][y - 1];
-		}
-
-		// Check lower left diagonal.
-		if (y == height - 1 && x == 0) {
-			count += squares[width - 1][0];
-		} else if (y == height - 1) {
-			count += squares[x - 1][0];
-		} else if (x == 0) {
-			count += squares[width - 1][y + 1];
+			// Check lower left diagonal.
+			if (y == height - 1 && x == 0) {
+				if (squares[width - 1][0]) {
+					count++;
+				}
+			} else if (y == height - 1) {
+				if (squares[x - 1][0]) {
+					count++;
+				}
+			} else if (x == 0) {
+				if (squares[width - 1][y + 1]) {
+					count++;
+				}
+			}
 		}
 
 		return count;
@@ -372,7 +404,7 @@ public class FastGameOfLifeModel extends JPanel
 			throw new IllegalArgumentException("Width or height is negative");
 		}
 
-		int[][] newSquares = new int[width][height];
+		boolean[][] newSquares = new boolean[width][height];
 
 		// Squares in the old grid stay the same.
 		for (int x = 0; x < Math.min(squares.length, newSquares.length); x++) {
@@ -382,7 +414,8 @@ public class FastGameOfLifeModel extends JPanel
 			}
 		}
 
-		// The rest of the squares are unfilled (0) by default so no need to do
+		// The rest of the squares are unfilled (false) by default so no need to
+		// do
 		// anything further.
 
 		squares = newSquares;
@@ -396,7 +429,7 @@ public class FastGameOfLifeModel extends JPanel
 	public void clearGrid() {
 		for (int x = 0; x < squares.length; x++) {
 			for (int y = 0; y < squares[x].length; y++) {
-				squares[x][y] = 0;
+				squares[x][y] = false;
 			}
 		}
 
@@ -438,7 +471,7 @@ public class FastGameOfLifeModel extends JPanel
 		g2d.setColor(fillColor);
 		for (int x = 0; x < squares.length; x++) {
 			for (int y = 0; y < squares[x].length; y++) {
-				if (squares[x][y] == 1) {
+				if (squares[x][y]) {
 					g2d.fillRect(dimSquare * x, dimSquare * y, dimSquare,
 							dimSquare);
 				}
