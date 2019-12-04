@@ -1,7 +1,5 @@
 package viewAndController;
 
-import java.awt.event.MouseListener;
-
-public interface IGameOfLifeGrid extends MouseListener {
+public interface IGameOfLifeGrid {
 	public void paintGrid(boolean[][] states);
 }

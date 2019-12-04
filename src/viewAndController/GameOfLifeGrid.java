@@ -6,10 +6,12 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
-public class GameOfLifeGrid extends JPanel implements IGameOfLifeGrid {
+public class GameOfLifeGrid extends JPanel implements IGameOfLifeGrid, MouseListener {
 	private static final Color DARK = new Color(0.5f, 0.5f, 0.5f);
 	private static final Color LIGHT = new Color(0.8f, 0.8f, 0.8f);
 	private static final int DEFAULT_SCREEN_WIDTH = 600;

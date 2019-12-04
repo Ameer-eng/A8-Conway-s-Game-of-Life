@@ -1,4 +1,4 @@
-package main;
+package a8;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -7,7 +7,7 @@ import model.FastGameOfLifeModel;
 import viewAndController.GameOfLifeController;
 import viewAndController.GameOfLifeView;
 
-public class Main {
+public class GameOfLife {
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
