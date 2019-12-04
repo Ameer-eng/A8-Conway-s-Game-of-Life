@@ -331,7 +331,7 @@ public class GameOfLifeView extends JPanel
 		listeners.remove(l);
 	}
 
-	protected void fireEvent(GameOfLifeViewEvent e) {
+	public void fireEvent(GameOfLifeViewEvent e) {
 		if (e == null) {
 			throw new IllegalArgumentException("Event must not be null.");
 		}
