@@ -15,6 +15,9 @@ public class GameOfLifeController implements IGameOfLifeController {
 		model.addGameOfLifeModelListener(this);
 		this.model = model;
 		this.view = view;
+		
+		// Paint view grid.
+		view.paintGrid(model.getStates());
 	}
 
 	/*
@@ -22,6 +25,15 @@ public class GameOfLifeController implements IGameOfLifeController {
 	 */
 	@Override
 	public void handleGameOfLifeViewEvent(GameOfLifeViewEvent e) {
+		if (e.isSquareClickedEvent()) {
+			SquareClickedEvent squareClicked = (SquareClickedEvent) e;
+			boolean[][] states = model.getStates();
+			int x = squareClicked.getX();
+			int y = squareClicked.getY();
+			if (x < states.length && x >= 0 && y < states[x].length && y >= 0) {
+				model.toggleSquare(x, y);
+			}
+		}
 		if (e.isFillGridRandomlyEvent()) {
 			FillGridRandomlyEvent fillGridRandomly = (FillGridRandomlyEvent) e;
 			model.fillGridRandomly(fillGridRandomly.getProbability());
@@ -60,8 +72,11 @@ public class GameOfLifeController implements IGameOfLifeController {
 	 * Handles updates from the Model.
 	 */
 	@Override
-	public void update(String actionCommand) {
+	public void update(String actionCommand, FastGameOfLifeModel model) {
 		switch (actionCommand) {
+		case "States changed":
+			view.paintGrid(model.getStates());
+			break;
 		case "Torus turned on":
 			view.setToggleTorusButtonTextTo("Turn torus off");
 			break;
@@ -73,6 +88,7 @@ public class GameOfLifeController implements IGameOfLifeController {
 			break;
 		case "Game stopped":
 			view.setStartStopButtonTextTo("Start");
+			break;
 		}
 	}
 }

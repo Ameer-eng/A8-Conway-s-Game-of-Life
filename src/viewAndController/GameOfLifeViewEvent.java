@@ -2,6 +2,10 @@ package viewAndController;
 
 public abstract class GameOfLifeViewEvent {
 
+	public boolean isSquareClickedEvent() {
+		return false;
+	}
+
 	public boolean isFillGridRandomlyEvent() {
 		return false;
 	}
@@ -44,6 +48,29 @@ public abstract class GameOfLifeViewEvent {
 
 	public boolean isChangeHighSurviveThresholdEvent() {
 		return false;
+	}
+}
+
+class SquareClickedEvent extends GameOfLifeViewEvent {
+	private int x;
+	private int y;
+
+	SquareClickedEvent(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	@Override
+	public boolean isSquareClickedEvent() {
+		return true;
 	}
 }
 

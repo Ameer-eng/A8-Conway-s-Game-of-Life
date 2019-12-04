@@ -1,5 +1,5 @@
 package model;
 
 public interface GameOfLifeModelListener {
-	void update(String actionCommand);
+	void update(String actionCommand, FastGameOfLifeModel model);
 }

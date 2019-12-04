@@ -13,7 +13,8 @@ public class Main {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				FastGameOfLifeModel model = new FastGameOfLifeModel();
-				GameOfLifeView view = new GameOfLifeView(model);
+				GameOfLifeView view = new GameOfLifeView();
+				@SuppressWarnings("unused")
 				GameOfLifeController controller = new GameOfLifeController(model, view);
 
 				// Create top level window.

@@ -12,15 +12,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import model.FastGameOfLifeModel;
-
+@SuppressWarnings("serial")
 public class GameOfLifeView extends JPanel
 		implements IGameOfLifeView, ActionListener {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
+	private GameOfLifeGrid grid;
 	private List<GameOfLifeViewListener> listeners;
 	private JButton toggleTorusButton;
 	private JButton startStopButton;
@@ -36,7 +31,9 @@ public class GameOfLifeView extends JPanel
 	/*
 	 * Constructor.
 	 */
-	public GameOfLifeView(FastGameOfLifeModel grid) {
+	public GameOfLifeView() {
+		grid = new GameOfLifeGrid(this);
+
 		/* Populate the view */
 		setLayout(new BorderLayout());
 
@@ -308,8 +305,24 @@ public class GameOfLifeView extends JPanel
 		}
 	}
 
+	/*
+	 * Paints the grid associated with this View.
+	 */
+	public void paintGrid(boolean[][] states) {
+		if (states == null) {
+			throw new IllegalArgumentException(
+					"States array must not be null.");
+		}
+
+		grid.paintGrid(states);
+	}
+
 	@Override
 	public void addGameOfLifeViewListener(GameOfLifeViewListener l) {
+		if (l == null) {
+			throw new IllegalArgumentException("Listeners must not be null");
+		}
+
 		listeners.add(l);
 	}
 
@@ -318,7 +331,11 @@ public class GameOfLifeView extends JPanel
 		listeners.remove(l);
 	}
 
-	private void fireEvent(GameOfLifeViewEvent e) {
+	protected void fireEvent(GameOfLifeViewEvent e) {
+		if (e == null) {
+			throw new IllegalArgumentException("Event must not be null.");
+		}
+
 		for (GameOfLifeViewListener l : listeners) {
 			l.handleGameOfLifeViewEvent(e);
 		}
