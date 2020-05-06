@@ -1,4 +1,4 @@
-# Conway-s-Game-of-Life
+# Conway's Game of Life
 
 An implementation of Conway's Game of Life using Java Swing. A description of the game can be found here:
 
@@ -16,3 +16,7 @@ Features:
 * Ability to set the "survive" and "birth" thresholds to custom values. The default threshold values in the classic game brings a dead cell to life if the number of neighboring live cells is greater than or equal to 2 (low birth threshold) and less than or equal to 3 (high birth threshold) and otherwise stays dead. A living cell survives if the number of neighboring live cells is greater than or equal to 3 (low survive threshold) and less than or equal to 3 (high survive threshold) and otherwise will de. 
 * Ability to toggle "torus" mode on or off. In torus mode, the field is treated as if it wraps around the edges back to the other edge.
 * A start/stop button that advances the game automatically using a separate thread with a delay between updates settable between 10 milliseconds and 1 second.
+
+## How to Play
+
+The main method is in the GameOfLife class located at src/a8/GameOfLife.java
