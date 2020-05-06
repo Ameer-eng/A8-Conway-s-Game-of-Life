@@ -4,7 +4,7 @@ An implementation of Conway's Game of Life using Java Swing. A description of th
 
 https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
 
-In the Wikipedia article, the game is described as being on an "infinite" grid. This version should uses a fixed sized grid that the user can control the size of. It is assumed that cells outside the boundary of the grid are always dead.
+In the Wikipedia article, the game is described as being on an "infinite" grid. This version uses a fixed sized grid that the user can control the size of. It is assumed that cells outside the boundary of the grid are always dead.
 
 Features:
 
@@ -20,3 +20,7 @@ Features:
 ## How to Play
 
 The main method is in the GameOfLife class located at src/a8/GameOfLife.java
+
+## Author
+
+Ameer Qaqish
