@@ -19,7 +19,7 @@ Features:
 
 ## How to Play
 
-The main method is in the GameOfLife class located at src/a8/GameOfLife.java
+Run the main method in the GameOfLife class located at src/a8/GameOfLife.java
 
 ## Author
 
