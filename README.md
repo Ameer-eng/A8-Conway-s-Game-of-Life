@@ -21,6 +21,14 @@ Features:
 
 Run the main method in the GameOfLife class located at src/a8/GameOfLife.java
 
+## Demo
+
+
+
+https://user-images.githubusercontent.com/52138031/155639817-92299ddb-1516-4810-bce6-357f1f31fcd7.mp4
+
+
+
 ## Author
 
 Ameer Qaqish
